@@ -143,8 +143,11 @@
 ;;
 (define (write-pdf path size sprites)
   (define dc (new pdf-dc% (output path)
-                  (width (sizen-width size))
-                  (height (sizen-height size))
+                  ; 正しく印刷できないときはpdfに
+                  ; はがきの画像を表示して
+                  ; widthとheightを調整する
+                  (width 400)
+                  (height 592)
                   (interactive #f)))
   (send* dc
     (start-doc "")
@@ -187,7 +190,8 @@
           (lambda (b e) 
             (match (put-file "Output PDF file" #f #f "out.pdf" "pdf" '() '(("PDF" "*.pdf")))
               (#f (void))
-              (path (write-pdf path postcard-size (cdr (get-sprites)))))))))
+              (path (write-pdf path postcard-size
+                               (cdr (get-sprites)))))))))
   
   (send f show #t))
   
